@@ -2,7 +2,7 @@
 
 void open_file(char *file_name);
 void read_file(FILE *);
-int parse_line(char *buffer, int line_number, int format);
+int parse_line(char *buff, int line_n, int format);
 void find_func(char *, char *, int, int);
 void call_fun(op_func, char *, char *, int, int);
 
@@ -14,78 +14,74 @@ void call_fun(op_func, char *, char *, int, int);
 
 void open_file(char *file_name)
 {
-	FILE *fd = fopen(file_name, "r");
+	FILE *_file = fopen(file_name, "r");
 
-	if (file_name == NULL || fd == NULL)
+	if (file_name == NULL || _file == NULL)
 		err(2, file_name);
-
-	read_file(fd);
-	fclose(fd);
+	read_file(_file);
+	fclose(_file);
 }
 
 
 /**
  * read_file - reads a file
- * @fd: pointer to file descriptor
+ * @_file: pointer to file descriptor
  * Return: void
  */
 
-void read_file(FILE *fd)
+void read_file(FILE *_file)
 {
-	int line_number, format = 0;
-	char *buffer = NULL;
-	size_t len = 0;
+	int line_n, format = 0;
+	char *buff = NULL;
+	size_t l = 0;
 
-	for (line_number = 1; getline(&buffer, &len, fd) != -1; line_number++)
+	for (line_n = 1; getline(&buff, &l, _file) != -1; line_n++)
 	{
-		format = parse_line(buffer, line_number, format);
+		format = parse_line(buff, line_n, format);
 	}
-	free(buffer);
+	free(buff);
 }
 
 
 /**
  * parse_line - Separates each line into tokens to determine
  * which function to call
- * @buffer: line from the file
- * @line_number: line number
+ * @buff: line from the file
+ * @line_n: line number
  * @format:  storage format. If 0 Nodes will be entered as a stack.
  * if 1 nodes will be entered as a queue.
  * Return: Returns 0 if the opcode is stack. 1 if queue.
  */
 
-int parse_line(char *buffer, int line_number, int format)
+int parse_line(char *buff, int line_n, int format)
 {
-	char *opcode, *value;
-	const char *delim = "\n ";
+	char *opcode, *val;
+	const char *dlim = "\n ";
 
-	if (buffer == NULL)
+	if (buff == NULL)
 		err(4);
-
-	opcode = strtok(buffer, delim);
+	opcode = strtok(buff, dlim);
 	if (opcode == NULL)
 		return (format);
-	value = strtok(NULL, delim);
-
+	val = strtok(NULL, dlim);
 	if (strcmp(opcode, "stack") == 0)
 		return (0);
 	if (strcmp(opcode, "queue") == 0)
 		return (1);
-
-	find_func(opcode, value, line_number, format);
+	find_func(opcode, val, line_n, format);
 	return (format);
 }
 
 /**
  * find_func - find the appropriate function for the opcode
  * @opcode: opcode
- * @value: argument of opcode
+ * @val: argument of opcode
  * @format:  storage format. If 0 Nodes will be entered as a stack.
  * @ln: line number
  * if 1 nodes will be entered as a queue.
  * Return: void
  */
-void find_func(char *opcode, char *value, int ln, int format)
+void find_func(char *opcode, char *val, int ln, int format)
 {
 	int i;
 	int flag;
@@ -108,15 +104,13 @@ void find_func(char *opcode, char *value, int ln, int format)
 		{"rotr", rotr},
 		{NULL, NULL}
 	};
-
 	if (opcode[0] == '#')
 		return;
-
 	for (flag = 1, i = 0; func_list[i].opcode != NULL; i++)
 	{
 		if (strcmp(opcode, func_list[i].opcode) == 0)
 		{
-			call_fun(func_list[i].f, opcode, value, ln, format);
+			call_fun(func_list[i].f, opcode, val, ln, format);
 			flag = 0;
 		}
 	}
@@ -129,16 +123,15 @@ void find_func(char *opcode, char *value, int ln, int format)
  * call_fun - Calls the required function.
  * @func: Pointer to the function that is about to be called.
  * @op: string representing the opcode.
- * @val: string representing a numeric value.
+ * @val: string representing a numeric val.
  * @ln: line numeber for the instruction.
  * @format: Format specifier. If 0 Nodes will be entered as a stack.
  * if 1 nodes will be entered as a queue.
  */
 void call_fun(op_func func, char *op, char *val, int ln, int format)
 {
-	stack_t *node;
-	int flag;
-	int i;
+	stack_t *new;
+	int flag, i;
 
 	flag = 1;
 	if (strcmp(op, "push") == 0)
@@ -155,11 +148,11 @@ void call_fun(op_func func, char *op, char *val, int ln, int format)
 			if (isdigit(val[i]) == 0)
 				err(5, ln);
 		}
-		node = create_node(atoi(val) * flag);
+		new = create_node(atoi(val) * flag);
 		if (format == 0)
-			func(&node, ln);
+			func(&new, ln);
 		if (format == 1)
-			add_to_queue(&node, ln);
+			add_to_queue(&new, ln);
 	}
 	else
 		func(&head, ln);
