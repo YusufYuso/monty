@@ -31,15 +31,15 @@ int main(int argc, char *argv[])
  */
 stack_t *create_node(int n)
 {
-	stack_t *node;
+	stack_t *nd;
 
-	node = malloc(sizeof(stack_t));
-	if (node == NULL)
+	nd = malloc(sizeof(stack_t));
+	if (nd == NULL)
 		err(4);
-	node->next = NULL;
-	node->prev = NULL;
-	node->n = n;
-	return (node);
+	nd->next = NULL;
+	nd->prev = NULL;
+	nd->n = n;
+	return (nd);
 }
 
 /**
@@ -47,15 +47,14 @@ stack_t *create_node(int n)
  */
 void free_nodes(void)
 {
-	stack_t *tmp;
+	stack_t *temp;
 
 	if (head == NULL)
 		return;
-
 	while (head != NULL)
 	{
-		tmp = head;
+		temp = head;
 		head = head->next;
-		free(tmp);
+		free(temp);
 	}
 }
