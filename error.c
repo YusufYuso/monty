@@ -1,5 +1,9 @@
 #include "monty.h"
 
+void err(int error_code, ...);
+void more_err(int error_code, ...);
+void string_err(int error_code, ...);
+
 /**
  * err - Prints appropiate error messages determined by their error code.
  * @error_code: The error codes are the following:
