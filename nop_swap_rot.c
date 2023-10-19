@@ -23,18 +23,18 @@ void nop(stack_t **stack, unsigned int line_number)
  */
 void swap_nodes(stack_t **stack, unsigned int line_number)
 {
-	stack_t *tmp;
+	stack_t *temp;
 
 	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
 		more_err(8, line_number, "swap");
-	tmp = (*stack)->next;
-	(*stack)->next = tmp->next;
-	if (tmp->next != NULL)
-		tmp->next->prev = *stack;
-	tmp->next = *stack;
-	(*stack)->prev = tmp;
-	tmp->prev = NULL;
-	*stack = tmp;
+	temp = (*stack)->next;
+	(*stack)->next = temp->next;
+	if (temp->next != NULL)
+		temp->next->prev = *stack;
+	temp->next = *stack;
+	(*stack)->prev = temp;
+	temp->prev = NULL;
+	*stack = temp;
 }
 
 /**
@@ -44,17 +44,15 @@ void swap_nodes(stack_t **stack, unsigned int line_number)
  */
 void rotl(stack_t **stack, __attribute__((unused)) unsigned int ln)
 {
-	stack_t *tmp;
+	stack_t *temp;
 
 	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
 		return;
-
-	tmp = *stack;
-	while (tmp->next != NULL)
-		tmp = tmp->next;
-
-	tmp->next = *stack;
-	(*stack)->prev = tmp;
+	temp = *stack;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = *stack;
+	(*stack)->prev = temp;
 	*stack = (*stack)->next;
 	(*stack)->prev->next = NULL;
 	(*stack)->prev = NULL;
@@ -67,19 +65,16 @@ void rotl(stack_t **stack, __attribute__((unused)) unsigned int ln)
  */
 void rotr(stack_t **stack, __attribute__((unused)) unsigned int ln)
 {
-	stack_t *tmp;
+	stack_t *temp;
 
 	if (stack == NULL || *stack == NULL || (*stack)->next == NULL)
 		return;
-
-	tmp = *stack;
-
-	while (tmp->next != NULL)
-		tmp = tmp->next;
-
-	tmp->next = *stack;
-	tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	(*stack)->prev = tmp;
-	(*stack) = tmp;
+	temp = *stack;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = *stack;
+	temp->prev->next = NULL;
+	temp->prev = NULL;
+	(*stack)->prev = temp;
+	(*stack) = temp;
 }
